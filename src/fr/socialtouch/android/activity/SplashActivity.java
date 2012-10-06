@@ -44,7 +44,7 @@ public class SplashActivity extends SherlockActivity implements OnClickListener 
 				new DialogListener() {
 					@Override
 					public void onComplete(Bundle values) {
-						SessionStore.displayInfo(SplashActivity.this);
+						//SessionStore.displayInfo(SplashActivity.this);
 						SessionStore.save(SocialTouchApp.getFacebook(), SplashActivity.this);
 
 						// retrieve user info asynchronously

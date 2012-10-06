@@ -3,7 +3,14 @@ package com.facebook.utils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +27,8 @@ import fr.socialtouch.android.SocialTouchApp;
 
 public class FBUserInfoRetrievalService extends Service {
 
+	private static final int MAX_LIKES_NUMBER = 10;
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -27,7 +36,6 @@ public class FBUserInfoRetrievalService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i(getClass().getSimpleName(), "ON START ");
 		retrieveUserInfo();
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
@@ -124,12 +132,10 @@ public class FBUserInfoRetrievalService extends Service {
 				SessionStore.setGender(this, getStringfFromJSONObject(jsonObject, "gender"));
 				// birthday format MM/dd/yyyy
 				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "birthday"));
-				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "town"));
-				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "hometown"));
-				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "religion"));
-				// retrieve LIKES
-				// birthday = jsonObject.getString("birthday");
-
+				SessionStore.setTown(this, getStringfFromJSONObject(jsonObject, "town"));
+				SessionStore.setHometown(this, getStringfFromJSONObject(jsonObject, "hometown"));
+				SessionStore.setReligion(this, getStringfFromJSONObject(jsonObject, "religion"));
+				SessionStore.setLikes(this, getLikesFromJSONObject(jsonObject));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -142,7 +148,50 @@ public class FBUserInfoRetrievalService extends Service {
 			value = jsonObject.getString(key);
 		} catch (JSONException e) {
 		}
-		Log.e(getClass().getSimpleName(), "KEY = "+key+ " VALUE = "+value);
+		Log.i(getClass().getSimpleName(), "KEY = " + key + " VALUE = " + value);
 		return value;
+	}
+
+	private List<String> getLikesFromJSONObject(JSONObject jsonObject) {
+		List<String> listLikes = null;
+		Map<String, Integer> likesNameWithLikesNumber = new HashMap<String, Integer>();
+		try {
+			JSONObject like;
+			JSONArray likesArray = jsonObject.getJSONObject("likes").getJSONArray("data");
+			for (int i = 0; i < likesArray.length(); i++) {
+				like = likesArray.getJSONObject(i);
+				likesNameWithLikesNumber.put(like.getString("name"), like.getInt("likes"));
+			}
+			ValueComparator bvc = new ValueComparator(likesNameWithLikesNumber);
+			TreeMap<String, Integer> sortedMap = new TreeMap<String, Integer>(bvc);
+			sortedMap.putAll(likesNameWithLikesNumber);
+			ArrayList<String> arrayListLikes = new ArrayList<String>(sortedMap.keySet());
+			if (arrayListLikes.size() > MAX_LIKES_NUMBER) {
+				listLikes = arrayListLikes.subList(0, MAX_LIKES_NUMBER);
+			}
+			Log.e(getClass().getSimpleName(), "likesFormated = " + listLikes);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return listLikes;
+	}
+
+	class ValueComparator implements Comparator<String> {
+
+		Map<String, Integer> base;
+
+		public ValueComparator(Map<String, Integer> base) {
+			this.base = base;
+		}
+
+		// Note: this comparator imposes orderings that are inconsistent with
+		// equals.
+		public int compare(String a, String b) {
+			if (base.get(a) >= base.get(b)) {
+				return -1;
+			} else {
+				return 1;
+			} // returning 0 would merge keys
+		}
 	}
 }

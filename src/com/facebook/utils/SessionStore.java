@@ -23,7 +23,6 @@ import java.util.StringTokenizer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 import com.facebook.android.Facebook;
 
@@ -179,13 +178,22 @@ public class SessionStore {
 			editor.commit();
 		}
 	}
+	
+	private static String getLikes(Context context) {
+		return context.getSharedPreferences(KEY, Context.MODE_PRIVATE).getString(LIKES, null);
+	}
+	
+	public String getFBProfileFormatted(Context context){
+		String res = "";
+		return res;
+	}
 
-	public static void displayInfo(Context context) {
+	/*public static void displayInfo(Context context) {
 		Log.i(SessionStore.class.getSimpleName(), "NAME = "
 				+ ((getName(context) == null) ? "NULL" : getName(context)));
 		Log.i(SessionStore.class.getSimpleName(), "USER NAME = "
 				+ ((getUserName(context) == null) ? "NULL" : getUserName(context)));
 		Log.i(SessionStore.class.getSimpleName(), "TIME = "
 				+ ((getUpdatedTime(context) == null) ? "NULL" : getUpdatedTime(context)));
-	}
+	}*/
 }

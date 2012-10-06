@@ -6,15 +6,24 @@ import java.nio.charset.Charset;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
+import android.os.Bundle;
 import android.util.Log;
+import fr.socialtouch.android.R;
 
 public class MatchingActivity extends Activity {
 
 	// max byte size
 	public static final int TAG_SIZE = 1504;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.matching);
+	}
 	
 	@Override
 	public void onResume() {
