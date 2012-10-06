@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import fr.socialtouch.android.R;
 
-public class MatchingActivity extends Activity {
+public class SyncActivity extends Activity {
 
 	// max byte size
 	public static final int TAG_SIZE = 1504;

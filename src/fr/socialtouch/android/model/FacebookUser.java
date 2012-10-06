@@ -1,5 +1,6 @@
 package fr.socialtouch.android.model;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,8 +12,9 @@ import fr.socialtouch.android.R;
 import android.content.Context;
 import android.util.Log;
 
-public class FacebookUser {
+public class FacebookUser implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private final String TAG = this.getClass().getName();
 	private Context mContext;
 	
@@ -196,5 +198,10 @@ public class FacebookUser {
 			returnInt =  -1;
 		//Log.v(TAG, "getAstro() => "+returnInt);
 		return returnInt;
+	}
+	
+	public static FacebookUser readObject(Context context, String facebookUserFormatted){
+		FacebookUser user = new FacebookUser(context);
+		return user;
 	}
 }

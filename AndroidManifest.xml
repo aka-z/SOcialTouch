@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme" 
         android:screenOrientation="portrait">
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".activity.FBConnectActivity"
             android:label="@string/title_activity_splash" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,10 +29,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.FrancoisTestActivity"
+            android:name=".activity.ContactListActivity"
             android:label="@string/title_activity_splash" >
         </activity>
-        <activity android:name=".activity.MatchingActivity" >
+         <activity
+            android:name=".activity.ContactDetailsActivity"
+            android:label="@string/title_activity_splash" >
+        </activity>
+        <activity android:name=".activity.SyncActivity" >
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
 

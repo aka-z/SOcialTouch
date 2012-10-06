@@ -19,7 +19,7 @@ import com.facebook.utils.SessionStore;
 import fr.socialtouch.android.R;
 import fr.socialtouch.android.SocialTouchApp;
 
-public class SplashActivity extends SherlockActivity implements OnClickListener {
+public class FBConnectActivity extends SherlockActivity implements OnClickListener {
 
 	private Button btnFBConnect;
 
@@ -45,14 +45,14 @@ public class SplashActivity extends SherlockActivity implements OnClickListener 
 					@Override
 					public void onComplete(Bundle values) {
 						//SessionStore.displayInfo(SplashActivity.this);
-						SessionStore.save(SocialTouchApp.getFacebook(), SplashActivity.this);
+						SessionStore.save(SocialTouchApp.getFacebook(), FBConnectActivity.this);
 
 						// retrieve user info asynchronously
 						Intent intent = new Intent();
-						intent.setClass(SplashActivity.this, FBUserInfoRetrievalService.class);
-						SplashActivity.this.startService(intent);
+						intent.setClass(FBConnectActivity.this, FBUserInfoRetrievalService.class);
+						FBConnectActivity.this.startService(intent);
 						// TODO launch next screen
-						Toast.makeText(SplashActivity.this, "Connection OK !", Toast.LENGTH_LONG)
+						Toast.makeText(FBConnectActivity.this, "Connection OK !", Toast.LENGTH_LONG)
 								.show();
 					}
 
@@ -80,7 +80,7 @@ public class SplashActivity extends SherlockActivity implements OnClickListener 
 	}
 
 	private void displayErrorDialog(String msgError) {
-		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SplashActivity.this);
+		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(FBConnectActivity.this);
 		String btnTxt = "OK";
 		if (msgError == null) {
 			msgError = "Ah la la..., je crois que Facebook ne vaut pas de toi...";

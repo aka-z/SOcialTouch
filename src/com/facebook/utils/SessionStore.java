@@ -183,7 +183,7 @@ public class SessionStore {
 		}
 	}
 
-	private static String getLikes(Context context) {
+	public static String getLikesFormatted(Context context) {
 		return context.getSharedPreferences(KEY, Context.MODE_PRIVATE).getString(LIKES, null);
 	}
 
@@ -232,8 +232,8 @@ public class SessionStore {
 		}
 		res += "|";
 		// likes
-		if (getLikes(context) != null) {
-			res += getLikes(context);
+		if (getLikesFormatted(context) != null) {
+			res += getLikesFormatted(context);
 		}
 		return res;
 	}

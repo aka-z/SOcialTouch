@@ -14,7 +14,7 @@ import fr.socialtouch.android.R;
 import fr.socialtouch.android.model.FacebookLike;
 import fr.socialtouch.android.model.FacebookUser;
 
-public class FrancoisTestActivity extends SherlockActivity {
+public class ContactListActivity extends SherlockActivity {
 
 	private final String TAG = this.getClass().getName();
 	
