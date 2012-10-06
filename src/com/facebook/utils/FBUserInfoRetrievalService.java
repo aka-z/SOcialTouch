@@ -27,7 +27,7 @@ import fr.socialtouch.android.SocialTouchApp;
 
 public class FBUserInfoRetrievalService extends Service {
 
-	private static final int MAX_LIKES_NUMBER = 10;
+	private static final int REQUIRED_NUMBER_OF_LIKES = 10;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -49,10 +49,12 @@ public class FBUserInfoRetrievalService extends Service {
 			// "name,username,updated_time,birthday"
 			// id,name,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)
 			params.putString("fields",
-					"id,name,updated_time,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)");
+					"name,updated_time,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)");
 			// get information about the currently logged in user
 			SocialTouchApp.getAsyncFacebookRunner().request("me", params,
 					new UserInfoRequestListener());
+		} else{
+			Log.e(getClass().getSimpleName(), "retrieveUserInfo FAILED");
 		}
 	}
 
@@ -64,23 +66,28 @@ public class FBUserInfoRetrievalService extends Service {
 		 */
 		@Override
 		public void onComplete(String response, Object state) {
+			Log.e(getClass().getSimpleName(), "onComplete");
 			storeFBInformations(response);
 		}
 
 		@Override
 		public void onIOException(IOException e, Object state) {
+			Log.e(getClass().getSimpleName(), "onIOException");
 		}
 
 		@Override
 		public void onFileNotFoundException(FileNotFoundException e, Object state) {
+			Log.e(getClass().getSimpleName(), "onFileNotFoundException");
 		}
 
 		@Override
 		public void onMalformedURLException(MalformedURLException e, Object state) {
+			Log.e(getClass().getSimpleName(), "onMalformedURLException");
 		}
 
 		@Override
 		public void onFacebookError(FacebookError e, Object state) {
+			Log.e(getClass().getSimpleName(), "onFacebookError");
 		}
 	}
 
@@ -126,7 +133,6 @@ public class FBUserInfoRetrievalService extends Service {
 			fbUpdatedTime = getStringfFromJSONObject(jsonObject, "updated_time");
 			String localInfoTime = SessionStore.getUpdatedTime(FBUserInfoRetrievalService.this);
 			if (localInfoTime == null || !fbUpdatedTime.equals(localInfoTime)) {
-				SessionStore.setId(this, getStringfFromJSONObject(jsonObject, "id"));
 				SessionStore.setName(this, getStringfFromJSONObject(jsonObject, "name"));
 				SessionStore.setUserName(this, getStringfFromJSONObject(jsonObject, "username"));
 				SessionStore.setGender(this, getStringfFromJSONObject(jsonObject, "gender"));
@@ -149,31 +155,52 @@ public class FBUserInfoRetrievalService extends Service {
 			value = jsonObject.getString(key);
 		} catch (JSONException e) {
 		}
-		Log.i(getClass().getSimpleName(), "KEY = " + key + " VALUE = " + value);
+		//Log.i(getClass().getSimpleName(), "KEY = " + key + " VALUE = " + value);
 		return value;
 	}
 
 	private List<String> getLikesFromJSONObject(JSONObject jsonObject) {
 		List<String> listLikes = null;
+		ArrayList<String> arrayListLikes = null;
+		TreeMap<String, Integer> sortedMap = null;
 		Map<String, Integer> likesNameWithLikesNumber = new HashMap<String, Integer>();
 		try {
 			JSONObject like;
+			// retrieve likes from data
 			JSONArray likesArray = jsonObject.getJSONObject("likes").getJSONArray("data");
 			for (int i = 0; i < likesArray.length(); i++) {
 				like = likesArray.getJSONObject(i);
+				// retrieve name and likes from likes
 				likesNameWithLikesNumber.put(like.getString("name"), like.getInt("likes"));
 			}
+			// sort likes from the most to the lowest number of likes
 			ValueComparator bvc = new ValueComparator(likesNameWithLikesNumber);
-			TreeMap<String, Integer> sortedMap = new TreeMap<String, Integer>(bvc);
+			sortedMap = new TreeMap<String, Integer>(bvc);
 			sortedMap.putAll(likesNameWithLikesNumber);
-			ArrayList<String> arrayListLikes = new ArrayList<String>(sortedMap.keySet());
-			if (arrayListLikes.size() > MAX_LIKES_NUMBER) {
-				listLikes = arrayListLikes.subList(0, MAX_LIKES_NUMBER);
+			arrayListLikes = new ArrayList<String>(sortedMap.keySet());
+			// add padding with # to have exactly REQUIRED_NUMBER_OF_LIKES elements
+			if (arrayListLikes.size() < REQUIRED_NUMBER_OF_LIKES) {
+				for (int i = arrayListLikes.size(); i < REQUIRED_NUMBER_OF_LIKES; i++) {
+					arrayListLikes.add("#");
+				}
 			}
-			Log.e(getClass().getSimpleName(), "likesFormated = " + listLikes);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		if (sortedMap != null) {
+			arrayListLikes = new ArrayList<String>(sortedMap.keySet());
+		} else {
+			// create an array and add padding
+			arrayListLikes = new ArrayList<String>(REQUIRED_NUMBER_OF_LIKES);
+			for (int i = 0; i < arrayListLikes.size(); i++) {
+				arrayListLikes.add("#");
+			}
+		}
+		// remove excessive likes if too many are present
+		if (arrayListLikes.size() > REQUIRED_NUMBER_OF_LIKES) {
+			listLikes = arrayListLikes.subList(0, REQUIRED_NUMBER_OF_LIKES);
+		}
+		Log.e(getClass().getSimpleName(), "likesFormated = " + listLikes);
 		return listLikes;
 	}
 
