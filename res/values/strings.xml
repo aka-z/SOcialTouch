@@ -4,9 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_splash">SplashActivity</string>
-
     <string name="message_facebook_login_failed">La connection facebook a échoué. Merci de recommencer.</string>
     <string name="message_facebook_logout_failed">La déconnection facebook a échoué. Merci de recommencer.</string>
     <string name="message_facebook_logout_encours">Déconnection facebook en cours...</string>
-    
+
 </resources>
