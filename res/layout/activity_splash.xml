@@ -4,11 +4,14 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_splash" >
 
-    <com.facebook.utils.FbLoginButton
-        android:id="@+id/splash_facebook_button"
+    <Button
+        android:id="@+id/btn_fb_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/splash_edittext_mp"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:background="@drawable/cmn_btn_loginfacebook"
+        android:onClick="onClick"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
 
 </RelativeLayout>
