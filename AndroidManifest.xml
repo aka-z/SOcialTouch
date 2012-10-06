@@ -4,10 +4,12 @@
     android:versionName="1.0 beta1" >
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="10"
         android:targetSdkVersion="16" />
 
+    <uses-feature android:name="android.hardware.nfc" android:required="true" />
     
+    <uses-permission android:name="android.permission.NFC" />
     
     <application
         android:icon="@drawable/ic_launcher"
@@ -20,12 +22,17 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
+           
+        </activity>
+        <activity 
+            android:name=".MatchingActivity">
+             <intent-filter>
    		 		<action android:name="android.nfc.action.TECH_DISCOVERED"/>
 			</intent-filter>
 			<meta-data android:name="android.nfc.action.TECH_DISCOVERED"
     			android:resource="@xml/techlist" />
-        </activity>
+		</activity>
+    		
     </application>
     
     
