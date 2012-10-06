@@ -19,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.facebook.android.DialogError;
@@ -142,6 +141,7 @@ public class FBConnectActivity extends SherlockFragmentActivity implements OnCli
                 // btnFBConnect.setEnabled(false);
 
                 Intent syncIntent = new Intent(mContext, SyncActivity.class);
+//                Intent listIntent = new Intent(mContext, ContactListActivity.class);
                 startActivity(syncIntent);
                 finish();
 

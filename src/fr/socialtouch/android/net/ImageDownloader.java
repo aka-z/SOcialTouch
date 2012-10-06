@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.util.EntityUtils;
 
 import android.graphics.Bitmap;
@@ -35,7 +36,7 @@ public class ImageDownloader {
 	private static InputStream getInputStreamFromUrl(String url) {
 		InputStream in = null;
 		AndroidHttpClient httpclient = AndroidHttpClient.newInstance(null);
-		// HttpClientParams.setRedirecting(httpclient.getParams(), true);
+		 HttpClientParams.setRedirecting(httpclient.getParams(), true);
 		HttpUriRequest request = new HttpGet(url.toString());
 		HttpResponse response;
 		try {

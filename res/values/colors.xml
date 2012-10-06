@@ -1,10 +1,20 @@
 <resources>
     
+    <color name="bkg_general2">#FFD32B15</color>
+    <color name="bkg_general3">#FFB52015</color>
+    
+    <color name="bkg_tuto">#FFFAEA</color>
+    
+    <color name="sepline">@android:color/white</color>
+    
     <color name="splash_gradient_bottom">#FFFF7764</color>
     <color name="splash_gradient_top">#FFE75541</color>
     
     <color name="biere_mousse">#FFFFFCEE</color>
     <color name="biere">#FFFFDF4B</color>
     <color name="biere_fond">#FFEBB600</color>
+    
+    <color name="textcolor_main">@android:color/white</color>
+    
     
 </resources>

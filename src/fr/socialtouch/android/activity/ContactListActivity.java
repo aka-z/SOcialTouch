@@ -1,26 +1,35 @@
 package fr.socialtouch.android.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.facebook.utils.SessionStore;
 
 import fr.socialtouch.android.ListAdapter;
 import fr.socialtouch.android.R;
 import fr.socialtouch.android.model.FacebookLike;
 import fr.socialtouch.android.model.FacebookUser;
 
-public class ContactListActivity extends SherlockActivity {
+public class ContactListActivity extends SherlockActivity implements ActionBar.OnNavigationListener {
 
 	private final String TAG = this.getClass().getName();
 	
 	private ListView mListView;
 	private FacebookUser me;
-	private ArrayList<FacebookUser> mListProfiles = new ArrayList<FacebookUser>();
+	private List<FacebookUser> mListProfiles = new ArrayList<FacebookUser>();
+	private List<String> mListSTT = new ArrayList<String>();
+	
+	private ListAdapter mListAdapter;
+	public static String ALL_STT = "All";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +40,38 @@ public class ContactListActivity extends SherlockActivity {
 		
 		initUI();
 		
-		createMe();
-		createProfiles();
+//		createMe();
+//		createProfiles();
+		
+//		mListProfiles = new ArrayList<FacebookUser>();
+		me = FacebookUser.readObject(this, SessionStore.getFBProfileFormatted(this));
+		Log.v(TAG, "me = " + me.toString());
+		
+		mListProfiles = SyncActivity.getFacebookUsersList();
 		
 		computeCompat();
 		
-		mListView.setAdapter(new ListAdapter(this, mListProfiles));
+		mListAdapter = new ListAdapter(this, mListProfiles);
+		mListView.setAdapter(mListAdapter);
+		initActionBar();
+	}
+	
+	private void initActionBar(){
+		getSupportActionBar().setDisplayShowTitleEnabled(false);		
+		
+		mListSTT.add(ALL_STT);
+		for(FacebookUser fbProfile : mListProfiles){
+			if(!fbProfile.mSocialTouchTag.equals("") && !mListSTT.contains(fbProfile.mSocialTouchTag)){
+				mListSTT.add(fbProfile.mSocialTouchTag);
+			}
+		}
+		
+		Context context = getSupportActionBar().getThemedContext();
+        ArrayAdapter<CharSequence> list = new ArrayAdapter(context, R.layout.sherlock_spinner_item, mListSTT);
+        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        getSupportActionBar().setListNavigationCallbacks(list, this);
 	}
 	
 	private void initUI(){
@@ -48,6 +83,7 @@ public class ContactListActivity extends SherlockActivity {
 		me.mBirthday = "05/07/1988";
 		me.mHomeTown.mZipcode = "59600";
 		me.mGender=GENDER[0];
+		me.mSocialTouchTag=SST[1];
 		me.mID = "48865453658";
 		me.mListLike = generateListeLike();
 		me.mReligion=RELIGION[0];
@@ -68,6 +104,7 @@ public class ContactListActivity extends SherlockActivity {
 			profile.mListLike = generateListeLike();
 			profile.mReligion = RELIGION[new Random().nextInt(RELIGION.length)];
 			profile.mUsername = "pseudo"+i;
+			profile.mSocialTouchTag = SST[new Random().nextInt(SST.length)];
 			profile.mLocation.mZipcode = ZIPCODE[new Random().nextInt(ZIPCODE.length)];
 			profile.mHomeTown.mZipcode = ZIPCODE[new Random().nextInt(ZIPCODE.length)];
 			Log.v(TAG, "profil"+i+": "+profile.toString());
@@ -89,6 +126,7 @@ public class ContactListActivity extends SherlockActivity {
 	private void computeCompat(){
 		for(FacebookUser fbProfile : mListProfiles)
 			Log.v(TAG, "Compat with "+fbProfile.mUsername+": "+fbProfile.getCompatibilityWith(me));
+		
 	}
 	
 	private String[] LIKES = {
@@ -125,8 +163,16 @@ public class ContactListActivity extends SherlockActivity {
 	         "Swimming",
 	};
 	
-	private String[] RELIGION = {"Catho","Boudiste","Cassouletiste","Choucroutiste","Androïdiste","BeMyAppiste", "Athé"};
-	private String[] GENDER = {"Male", "Female", "Asexué", "Bisexuel"};
-	//private String[] LOCATION = {"Maubeuge", "Paris", "Cergy", "Lyon", "Lille", "Strasbourg", "Nantes", "Bordeaux", "Boulogne-Billancourt"};
+	private String[] RELIGION = {"Catho","Boudiste","Cassouletiste","Choucroutiste","Androï¿½diste","BeMyAppiste", "Athï¿½"};
+	private String[] GENDER = {"Male", "Female", "Asexuï¿½", "Bisexuel"};
 	private String[] ZIPCODE = {"62352","75015","75001","59600","62500","59000","59611","01234","05689","75013"};
+	private String[] SST = {"!mabite", "!patricsebastien", "!developer", "!designer"};
+	
+	
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		Log.v(TAG, "onNavigationItemSelected("+itemPosition+") => sst="+mListSTT.get(itemPosition));
+		mListAdapter.refresh(mListSTT.get(itemPosition));
+		return false;
+	}
 }

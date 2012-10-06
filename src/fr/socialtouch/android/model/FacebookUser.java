@@ -35,7 +35,7 @@ public class FacebookUser implements Serializable {
 	public String mReligion = "";
 	public AddressSOcialTouch mLocation = new AddressSOcialTouch();
 	public AddressSOcialTouch mHomeTown = new AddressSOcialTouch();
-	public String mSocialTouchTag = "$sttag";
+	public String mSocialTouchTag = "";
 	private ArrayList<String> mListCommonPoints = new ArrayList<String>();
 
 	private double mCompatibityRate = -1;
@@ -97,7 +97,7 @@ public class FacebookUser implements Serializable {
 		double scoreMax = 0;
 		mListCommonPoints.clear();
 
-		if (!this.mBirthday.isEmpty() && !profile.mBirthday.isEmpty()) {
+		if (!this.mBirthday.equals("") && !profile.mBirthday.equals("")) {
 			try {
 				Date birthday = new SimpleDateFormat("MM/dd/yyyy").parse(this.mBirthday);
 				Date birthdayProfile = new SimpleDateFormat("MM/dd/yyyy").parse(profile.mBirthday);
@@ -116,7 +116,7 @@ public class FacebookUser implements Serializable {
 			}
 		}
 
-		if (!this.mReligion.isEmpty() && !profile.mReligion.isEmpty()) {
+		if (!this.mReligion.equals("") && !profile.mReligion.equals("")) {
 			scoreMax += 2;
 			if (this.mReligion.equalsIgnoreCase(profile.mReligion)) {
 				mCompatibityRate += 2;
@@ -125,28 +125,24 @@ public class FacebookUser implements Serializable {
 			}
 		}
 
-		if (!this.mLocation.mZipcode.isEmpty() && !profile.mLocation.mZipcode.isEmpty()) {
-			scoreMax += 8;
-			if (this.mLocation.mZipcode.equals(profile.mLocation.mZipcode)) {
-				mCompatibityRate += 8;
-				mListCommonPoints.add(mContext.getString(R.string.point_commun_danslecoin));
-			} else if (this.mLocation.mZipcode.subSequence(0, 1).equals(
-					profile.mLocation.mZipcode.subSequence(0, 1)))
-				mCompatibityRate += 4;
-		}
+        if (!this.mLocation.mTown.isEmpty() && !profile.mLocation.mTown.isEmpty()) {
+            scoreMax += 8;
+            if (this.mLocation.mTown.equals(profile.mLocation.mTown)) {
+                mCompatibityRate += 8;
+                mListCommonPoints.add(mContext.getString(R.string.point_commun_danslecoin));
+            } 
+        }
 
-		if (!this.mHomeTown.mZipcode.isEmpty() && !profile.mHomeTown.mZipcode.isEmpty()) {
-			scoreMax += 5;
-			if (this.mHomeTown.mZipcode.equals(profile.mHomeTown.mZipcode)) {
-				mCompatibityRate += 5;
-				mListCommonPoints
-						.add(mContext.getString(R.string.point_commun_danslecoin_hometown));
-			} else if (this.mHomeTown.mZipcode.subSequence(0, 1).equals(
-					profile.mHomeTown.mZipcode.subSequence(0, 1)))
-				mCompatibityRate += 2.5;
-		}
+        if (!this.mHomeTown.mTown.isEmpty() && !profile.mHomeTown.mTown.isEmpty()) {
+            scoreMax += 5;
+            if (this.mHomeTown.mTown.equals(profile.mHomeTown.mTown)) {
+                mCompatibityRate += 5;
+                mListCommonPoints
+                        .add(mContext.getString(R.string.point_commun_danslecoin_hometown));
+            } 
+        }
 
-		if (!this.mBirthday.isEmpty() && !profile.mBirthday.isEmpty()) {
+		if (!this.mBirthday.equals("") && !profile.mBirthday.equals("")) {
 			scoreMax += 6;
 			if (getAstro() == profile.getAstro()) {
 				mCompatibityRate += 6;
@@ -173,56 +169,56 @@ public class FacebookUser implements Serializable {
 		return mCompatibityRate;
 	}
 
-	private int getAstro() {
-		Date birthday;
-		int returnInt;
-		try {
-			birthday = new SimpleDateFormat("MM/dd/yyyy").parse(this.mBirthday);
-		} catch (ParseException e) {
-			Log.w(TAG, "getAstro() => " + e.getMessage());
-			return -1;
-		}
-		if (birthday.getMonth() >= 2 && birthday.getDate() >= 21 && birthday.getMonth() <= 3
-				&& birthday.getDate() <= 20)
-			returnInt = 0;
-		else if (birthday.getMonth() >= 3 && birthday.getDate() >= 21 && birthday.getMonth() <= 4
-				&& birthday.getDate() <= 20)
-			returnInt = 1;
-		else if (birthday.getMonth() >= 4 && birthday.getDate() >= 21 && birthday.getMonth() <= 5
-				&& birthday.getDate() <= 21)
-			returnInt = 2;
-		else if (birthday.getMonth() >= 5 && birthday.getDate() >= 22 && birthday.getMonth() <= 6
-				&& birthday.getDate() <= 22)
-			returnInt = 3;
-		else if (birthday.getMonth() >= 6 && birthday.getDate() >= 23 && birthday.getMonth() <= 7
-				&& birthday.getDate() <= 22)
-			returnInt = 4;
-		else if (birthday.getMonth() >= 7 && birthday.getDate() >= 23 && birthday.getMonth() <= 8
-				&& birthday.getDate() <= 22)
-			returnInt = 5;
-		else if (birthday.getMonth() >= 8 && birthday.getDate() >= 23 && birthday.getMonth() <= 9
-				&& birthday.getDate() <= 23)
-			returnInt = 6;
-		else if (birthday.getMonth() >= 9 && birthday.getDate() >= 24 && birthday.getMonth() <= 10
-				&& birthday.getDate() <= 22)
-			returnInt = 7;
-		else if (birthday.getMonth() >= 10 && birthday.getDate() >= 23 && birthday.getMonth() <= 11
-				&& birthday.getDate() <= 21)
-			returnInt = 8;
-		else if (birthday.getMonth() >= 11 && birthday.getDate() >= 22 && birthday.getMonth() <= 0
-				&& birthday.getDate() <= 20)
-			returnInt = 9;
-		else if (birthday.getMonth() >= 0 && birthday.getDate() >= 21 && birthday.getMonth() <= 1
-				&& birthday.getDate() <= 19)
-			returnInt = 10;
-		else if (birthday.getMonth() >= 1 && birthday.getDate() >= 20 && birthday.getMonth() <= 2
-				&& birthday.getDate() <= 20)
-			returnInt = 11;
-		else
-			returnInt = -1;
-		// Log.v(TAG, "getAstro() => "+returnInt);
-		return returnInt;
-	}
+    private int getAstro() {
+        Date birthday;
+        int returnInt;
+        try {
+            birthday = new SimpleDateFormat("MM/dd/yyyy").parse(this.mBirthday);
+        } catch (ParseException e) {
+            Log.w(TAG, "getAstro() => " + e.getMessage());
+            return -1;
+        }
+        if ((birthday.getMonth() == 2 && birthday.getDate() >= 21) || (birthday.getMonth() == 3
+                && birthday.getDate() <= 20))
+            returnInt = 0;
+        else if ((birthday.getMonth() == 3 && birthday.getDate() >= 21) || (birthday.getMonth() == 4
+                && birthday.getDate() <= 20))
+            returnInt = 1;
+        else if ((birthday.getMonth() == 4 && birthday.getDate() >= 21) || (birthday.getMonth() == 5
+                && birthday.getDate() <= 21))
+            returnInt = 2;
+        else if ((birthday.getMonth() == 5 && birthday.getDate() >= 22) || (birthday.getMonth() == 6
+                && birthday.getDate() <= 22))
+            returnInt = 3;
+        else if ((birthday.getMonth() == 6 && birthday.getDate() >= 23) || (birthday.getMonth() == 7
+                && birthday.getDate() <= 22))
+            returnInt = 4;
+        else if ((birthday.getMonth() == 7 && birthday.getDate() >= 23) || (birthday.getMonth() == 8
+                && birthday.getDate() <= 22))
+            returnInt = 5;
+        else if ((birthday.getMonth() == 8 && birthday.getDate() >= 23) || (birthday.getMonth() == 9
+                && birthday.getDate() <= 23))
+            returnInt = 6;
+        else if ((birthday.getMonth() == 9 && birthday.getDate() >= 24) || (birthday.getMonth() == 10
+                && birthday.getDate() <= 22))
+            returnInt = 7;
+        else if ((birthday.getMonth() == 10 && birthday.getDate() >= 23) || (birthday.getMonth() == 11
+                && birthday.getDate() <= 21))
+            returnInt = 8;
+        else if ((birthday.getMonth() == 11 && birthday.getDate() >= 22) || (birthday.getMonth() == 0
+                && birthday.getDate() <= 20))
+            returnInt = 9;
+        else if ((birthday.getMonth() == 0 && birthday.getDate() >= 21) || (birthday.getMonth() == 1
+                && birthday.getDate() <= 19))
+            returnInt = 10;
+        else if ((birthday.getMonth() == 1 && birthday.getDate() >= 20) || (birthday.getMonth() == 2
+                && birthday.getDate() <= 20))
+            returnInt = 11;
+        else
+            returnInt = -1;
+        // Log.v(TAG, "getAstro() => "+returnInt);
+        return returnInt;
+    }
 
 	public static FacebookUser readObject(Context context, String facebookUserFormatted) {
 		FacebookUser user = new FacebookUser(context);

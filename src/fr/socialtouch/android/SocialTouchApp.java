@@ -1,6 +1,7 @@
 package fr.socialtouch.android;
 
 import android.app.Application;
+import android.graphics.Typeface;
 import android.util.Log;
 
 import com.facebook.android.AsyncFacebookRunner;
@@ -16,10 +17,16 @@ public class SocialTouchApp extends Application {
 	private static AsyncFacebookRunner mFacebookAsync;
 	private static final String FACEBOOK_APP_ID = "475398122492638";
 
+    public static Typeface mFont;
+
+	
 	@Override
 	public void onCreate() {
 		Log.i(TAG, "onCreate()");
 		super.onCreate();
+		
+	      mFont = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
+
 	}
 
 	public static Facebook getFacebook() {

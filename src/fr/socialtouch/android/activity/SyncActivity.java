@@ -13,7 +13,8 @@ import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.utils.SessionStore;
 
@@ -21,7 +22,11 @@ import fr.socialtouch.android.R;
 import fr.socialtouch.android.model.FacebookUser;
 
 public class SyncActivity extends Activity {
+    
+    private static final String LOG_TAG = SyncActivity.class.getName();
 
+    
+    
 	// max byte size
 	public static final int TAG_SIZE = 1504;
 	private static final String PROFILE_1 = "bhart|Bret Hart|0|12-04-83|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
@@ -30,89 +35,106 @@ public class SyncActivity extends Activity {
 	private static final String PROFILE_4 = "bhart|#|1|#|#|#|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
 	private static final String PROFILE_5 = "#|#|0|#|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
 
-	TextView resultFacebook;
-
 	private static List<FacebookUser> facebookUserList;
 
 	static {
 		facebookUserList = new ArrayList<FacebookUser>();
 	}
+	
+	EditText mTagEditText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.matching);
+		
+		mTagEditText = (EditText) findViewById(R.id.ed_hashtag);
+	}
+	
+	private void tagSynchronization (Intent intent) {
+//	       Intent intent = getIntent();
+	        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+	        boolean alreadyTag = false;
 
-		resultFacebook = (TextView) findViewById(R.id.resultFacebook);
+	        if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(getIntent().getAction())) {
+	            // tag d�tect�
+	            MifareClassic mifare = MifareClassic.get(tag);
+	            // on peut lire et �crire ici
+	            try {
 
+	                //clearTag(mifare);
+	                
+	                String prof_string = "";
+	                String data = readFromTag(mifare);
+
+	                String[] profiles;
+	                profiles = data.split("(\\|\\|)");
+
+	                if (profiles.length == 0) {
+	                    prof_string = SessionStore.getFBProfileFormatted(this) + "||";
+	                    clearTag(mifare);
+	                    writeToTag(mifare, prof_string, false);
+	                    
+	                    Toast.makeText(this, "Tu es le premier !", Toast.LENGTH_LONG).show();
+	                    
+	                } else {
+	                    synchronized (facebookUserList) {
+	                        facebookUserList.clear();
+	                        for (int i = 0; i < profiles.length - 1; i++) {
+	                            // retrieve and store user
+	                            FacebookUser user = FacebookUser.readObject(this, profiles[i]);
+	                            
+                                // check if current user is already in list
+	                            if (!user.mUsername.equalsIgnoreCase(SessionStore.getUserName(this))) {
+	                                facebookUserList.add(user);
+                                } else {
+                                    alreadyTag = true;
+                                }
+	                            
+	                            // TODO CHECK
+	                            prof_string += profiles[i] + "||";
+	                            Log.e("SocialTouch", "Read Profile data = " + profiles[i]);
+	                        }
+	                    }
+
+	                    if (!alreadyTag
+	                            && SessionStore.getFBProfileFormatted(this).length()
+	                                    + prof_string.length() < TAG_SIZE) {
+	                        prof_string += SessionStore.getFBProfileFormatted(this) + "||";
+	                        clearTag(mifare);
+	                        writeToTag(mifare, prof_string, false);
+	                    }
+	                    
+	                    if (mTagEditText != null && mTagEditText.getText().toString().length() > 0) {
+                            SessionStore.setSOcialTouchTag(this, mTagEditText.getText().toString());
+                        }
+	                    
+	                    Intent listIntent = new Intent(this, ContactListActivity.class);
+	                    startActivity(listIntent);
+	                }
+
+	                // FacebookUser user = FacebookUser.readObject(this,
+	                // profiles[0]);
+	                // FacebookUser user2 = FacebookUser.readObject(this,
+	                // profiles[1]);
+
+//	              resultFacebook.setText(facebookUserList.toString());
+
+	                Log.e("SocialTouch", "Tag data = " + data);
+	            } catch (IOException e) {
+	                // oh no !
+	                e.printStackTrace();
+	            }
+	        }
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 
-		Intent intent = getIntent();
-		Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-		boolean alreadyTag = false;
+		tagSynchronization(getIntent());
+		
 
-		if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(getIntent().getAction())) {
-			// tag d�tect�
-			MifareClassic mifare = MifareClassic.get(tag);
-			// on peut lire et �crire ici
-			try {
-
-				//clearTag(mifare);
-				
-				String prof_string = "";
-				String data = readFromTag(mifare);
-
-				String[] profiles;
-				profiles = data.split("(\\|\\|)");
-
-				if (profiles.length == 0) {
-					prof_string = SessionStore.getFBProfileFormatted(this) + "||";
-					clearTag(mifare);
-					writeToTag(mifare, prof_string, false);
-				} else {
-					synchronized (facebookUserList) {
-						facebookUserList.clear();
-						for (int i = 0; i < profiles.length - 1; i++) {
-							// retrieve and store user
-							FacebookUser user = FacebookUser.readObject(this, profiles[i]);
-							facebookUserList.add(user);
-							// check if current user is already in list
-							if (user.mUsername.equals(SessionStore.getUserName(this))) {
-								alreadyTag = true;
-							}
-							// TODO CHECK
-							prof_string += profiles[i] + "||";
-							Log.e("SocialTouch", "Read Profile data = " + profiles[i]);
-						}
-					}
-
-					if (!alreadyTag
-							&& SessionStore.getFBProfileFormatted(this).length()
-									+ prof_string.length() < TAG_SIZE) {
-						prof_string += SessionStore.getFBProfileFormatted(this) + "||";
-						clearTag(mifare);
-						writeToTag(mifare, prof_string, false);
-					}
-
-				}
-
-				// FacebookUser user = FacebookUser.readObject(this,
-				// profiles[0]);
-				// FacebookUser user2 = FacebookUser.readObject(this,
-				// profiles[1]);
-
-				resultFacebook.setText(facebookUserList.toString());
-
-				Log.e("SocialTouch", "Tag data = " + data);
-			} catch (IOException e) {
-				// oh no !
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public void clearTag(MifareClassic mifare) throws IOException {
@@ -196,7 +218,10 @@ public class SyncActivity extends Activity {
 
 	@Override
 	public void onNewIntent(Intent intent) {
-		setIntent(intent);
+	    Log.v(LOG_TAG, "onNewIntent");
+        setIntent(intent);
+
+        tagSynchronization(intent);
 	}
 
 	public static List<FacebookUser> getFacebookUsersList() {

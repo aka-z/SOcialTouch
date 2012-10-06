@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_splash" >
+    android:background="@color/bkg_general3" >
 
     <TextView
         android:id="@+id/tv_choose_your_tag"
@@ -10,17 +10,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+        android:textSize="25dp"
         android:text="Choisis un tag : " />
 
     <EditText
         android:id="@+id/ed_hashtag"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_choose_your_tag"
         android:layout_centerHorizontal="true"
-        android:text="C&apos;est la fête à ma bite !"
-        android:textColor="@android:color/white" >
+        android:layout_marginTop="30dp"
+        android:hint="Mon tag"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:textColor="@android:color/black" >
 
         <requestFocus />
     </EditText>
@@ -31,7 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ed_hashtag"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Pose ton tel" />
+        android:layout_marginTop="40dp"
+        android:textSize="25dp"
+        android:text="Pose ton téléphone sur le tag !" />
 
 </RelativeLayout>

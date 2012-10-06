@@ -1,13 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/gradient_splash" >
+    android:background="@color/bkg_general3" >
 
     <ListView
         android:id="@+id/activity_liste_listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:cacheColorHint="@android:color/transparent"
-        android:divider="@android:color/black" />
+        android:divider="@color/sepline"
+        android:dividerHeight="1px"
+        android:paddingLeft="@dimen/padding_medium"
+        android:paddingRight="@dimen/padding_medium"
+        android:scrollbarStyle="outsideOverlay" />
 
 </RelativeLayout>
