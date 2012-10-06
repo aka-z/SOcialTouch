@@ -3,18 +3,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_splash" >
-
-    <EditText
-        android:id="@+id/editText1"
+
+    <TextView
+        android:id="@+id/tv_choose_your_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:ems="10"
+        android:layout_marginTop="10dp"
+        android:text="Choisis un tag : " />
+
+    <EditText
+        android:id="@+id/ed_hashtag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_choose_your_tag"
+        android:layout_centerHorizontal="true"
         android:text="C&apos;est la fête à ma bite !"
-        android:textColor="@color/splash_gradient_bottom" >
+        android:textColor="@android:color/white" >
 
         <requestFocus />
     </EditText>
-    
+
+    <TextView
+        android:id="@+id/tv_pose_ton_tel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ed_hashtag"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Pose ton tel" />
+
 </RelativeLayout>
