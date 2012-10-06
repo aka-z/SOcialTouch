@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.jar.JarOutputStream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,8 +139,14 @@ public class FBUserInfoRetrievalService extends Service {
 				SessionStore.setGender(this, getStringfFromJSONObject(jsonObject, "gender"));
 				// birthday format MM/dd/yyyy
 				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "birthday"));
-				SessionStore.setTown(this, getStringfFromJSONObject(jsonObject, "town"));
-				SessionStore.setHometown(this, getStringfFromJSONObject(jsonObject, "hometown"));
+				JSONObject town = getInnerJSONObject(jsonObject, "town");
+				if(town != null){
+					SessionStore.setTown(this, getStringfFromJSONObject(town, "name"));
+				}
+				town = getInnerJSONObject(jsonObject, "hometown");
+				if(town != null){
+					SessionStore.setHometown(this, getStringfFromJSONObject(town, "name"));
+				}
 				SessionStore.setReligion(this, getStringfFromJSONObject(jsonObject, "religion"));
 				SessionStore.setLikes(this, getLikesFromJSONObject(jsonObject));
 			}
@@ -158,7 +165,17 @@ public class FBUserInfoRetrievalService extends Service {
 		//Log.i(getClass().getSimpleName(), "KEY = " + key + " VALUE = " + value);
 		return value;
 	}
-
+	
+	private JSONObject getInnerJSONObject(JSONObject jsonObject, String key){
+		JSONObject value = null;
+		try {
+			value = jsonObject.getJSONObject(key);
+		} catch (JSONException e) {
+		}
+		//Log.i(getClass().getSimpleName(), "KEY = " + key + " VALUE = " + value);
+		return value;
+	}
+	
 	private List<String> getLikesFromJSONObject(JSONObject jsonObject) {
 		List<String> listLikes = null;
 		ArrayList<String> arrayListLikes = null;
