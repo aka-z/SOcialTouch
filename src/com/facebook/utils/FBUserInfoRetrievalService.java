@@ -38,9 +38,13 @@ public class FBUserInfoRetrievalService extends Service {
 		SessionStore.restore(SocialTouchApp.getFacebook(), this);
 		if (SocialTouchApp.getFacebook().isSessionValid()) {
 			Bundle params = new Bundle();
-			params.putString("fields", "name,username,updated_time,birthday");
+			// "name,username,updated_time,birthday"
+			// id,name,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)
+			params.putString("fields",
+					"id,name,updated_time,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)");
 			// get information about the currently logged in user
-			SocialTouchApp.getAsyncFacebookRunner().request("me", params, new UserInfoRequestListener());
+			SocialTouchApp.getAsyncFacebookRunner().request("me", params,
+					new UserInfoRequestListener());
 		}
 	}
 
@@ -52,7 +56,7 @@ public class FBUserInfoRetrievalService extends Service {
 		 */
 		@Override
 		public void onComplete(String response, Object state) {
-			
+			storeFBInformations(response);
 		}
 
 		@Override
@@ -102,34 +106,43 @@ public class FBUserInfoRetrievalService extends Service {
 			SessionStore.clear(getApplicationContext());
 		}
 	}
-	
-	
-	private void storeFBInformations(String response){
-		SessionStore.displayInfo(getApplicationContext());
+
+	private void storeFBInformations(String response) {
+		Log.e(getClass().getSimpleName(), "RESPONSE FROM FB OK : " + response);
+		// SessionStore.displayInfo(getApplicationContext());
 		String fbUpdatedTime = null;
 		try {
-			Log.i(getClass().getSimpleName(), "RESPONSE FROM FB OK : " + response);
+
 			JSONObject jsonObject = new JSONObject(response);
 
-			fbUpdatedTime = jsonObject.getString("updated_time");
+			fbUpdatedTime = getStringfFromJSONObject(jsonObject, "updated_time");
 			String localInfoTime = SessionStore.getUpdatedTime(FBUserInfoRetrievalService.this);
 			if (localInfoTime == null || !fbUpdatedTime.equals(localInfoTime)) {
-				SessionStore.setId(this, jsonObject.getString("id"));
-				SessionStore.setName(this, jsonObject.getString("name"));
-				SessionStore.setUserName(this, jsonObject.getString("username"));
-				SessionStore.setGender(this, jsonObject.getString("gender"));
-				SessionStore.setBirthday(this, jsonObject.getString("birthday"));
-				SessionStore.setTown(this, jsonObject.getString("town"));
-				SessionStore.setHometown(this, jsonObject.getString("hometown"));
-				SessionStore.setReligion(this, jsonObject.getString("religion"));
-				// retrieve LIKES
+				SessionStore.setId(this, getStringfFromJSONObject(jsonObject, "id"));
+				SessionStore.setName(this, getStringfFromJSONObject(jsonObject, "name"));
+				SessionStore.setUserName(this, getStringfFromJSONObject(jsonObject, "username"));
+				SessionStore.setGender(this, getStringfFromJSONObject(jsonObject, "gender"));
 				// birthday format MM/dd/yyyy
-				//birthday = jsonObject.getString("birthday");
-				
-				
+				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "birthday"));
+				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "town"));
+				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "hometown"));
+				SessionStore.setBirthday(this, getStringfFromJSONObject(jsonObject, "religion"));
+				// retrieve LIKES
+				// birthday = jsonObject.getString("birthday");
+
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private String getStringfFromJSONObject(JSONObject jsonObject, String key) {
+		String value = null;
+		try {
+			value = jsonObject.getString(key);
+		} catch (JSONException e) {
+		}
+		Log.e(getClass().getSimpleName(), "KEY = "+key+ " VALUE = "+value);
+		return value;
 	}
 }

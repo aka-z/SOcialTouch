@@ -9,7 +9,7 @@ import com.facebook.android.Facebook;
 public class SocialTouchApp extends Application {
 
 	public static final String[] FACEBOOK_PERMISSIONS = new String[] { "user_birthday",
-			"publish_stream", "publish_actions" };
+			"user_hometown", "user_location", "user_likes" };
 
 	private static final String TAG = SocialTouchApp.class.getName();
 	private static Facebook mFacebook;
