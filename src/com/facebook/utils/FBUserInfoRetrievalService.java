@@ -140,6 +140,7 @@ public class FBUserInfoRetrievalService extends Service {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		Log.e(getClass().getSimpleName(), SessionStore.getFBProfileFormatted(this));
 	}
 
 	private String getStringfFromJSONObject(JSONObject jsonObject, String key) {

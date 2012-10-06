@@ -28,6 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.FrancoisTestActivity"
+            android:label="@string/title_activity_splash" >
+        </activity>
         <activity android:name=".activity.MatchingActivity" >
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
@@ -40,7 +44,7 @@
                 android:resource="@xml/techlist" />
         </activity>
 
-        <service android:name="com.facebook.utils.FBUserInfoRetrievalService" />
+        <service android:name="com.facebook.fr.socialtouch.android.utils.FBUserInfoRetrievalService" />
     </application>
 
 </manifest>

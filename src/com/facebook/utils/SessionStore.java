@@ -44,6 +44,9 @@ public class SessionStore {
 	private static final String RELIGION = "religion";
 	private static final String LIKES = "likes";
 
+	private static final byte MALE = 0x00;
+	private static final byte FEMALE = 0x01;
+
 	public static boolean save(Facebook session, Context context) {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
 		editor.putString(TOKEN, session.getAccessToken());
@@ -156,10 +159,11 @@ public class SessionStore {
 	}
 
 	public static List<String> getLikesList(Context context) {
-		String likes = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).getString(LIKES, null);
+		String likes = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).getString(LIKES,
+				null);
 		List<String> likesList = new ArrayList<String>();
 		StringTokenizer token = new StringTokenizer(likes, "|");
-		while(token.hasMoreTokens()){
+		while (token.hasMoreTokens()) {
 			likesList.add(token.nextToken());
 		}
 		return likesList;
@@ -167,33 +171,70 @@ public class SessionStore {
 
 	public static void setLikes(Context context, List<String> likesList) {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
-		if(likesList != null && !likesList.isEmpty()){
+		if (likesList != null && !likesList.isEmpty()) {
 			String likes = "";
-			for(String s : likesList){
-				likes+= s+"|";
+			for (String s : likesList) {
+				likes += s + "|";
 			}
 			// remove the last pipe
-			likes = likes.substring(0, likes.length()-1);
+			likes = likes.substring(0, likes.length() - 1);
 			editor.putString(LIKES, likes);
 			editor.commit();
 		}
 	}
-	
+
 	private static String getLikes(Context context) {
 		return context.getSharedPreferences(KEY, Context.MODE_PRIVATE).getString(LIKES, null);
 	}
-	
-	public String getFBProfileFormatted(Context context){
+
+	// "516515302|bhart|Bret Hart|0|12-04-83|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+
+	public static String getFBProfileFormatted(Context context) {
 		String res = "";
+		// ID
+		if (getId(context) != null) {
+			res += getId(context);
+		}
+		res += "|";
+		// username
+		if (getUserName(context) != null) {
+			res += getUserName(context);
+		}
+		res += "|";
+		// name
+		if (getName(context) != null) {
+			res += getName(context);
+		}
+		res += "|";
+		// gender
+		if (getName(context) != null) {
+			res += getName(context) == "male" ? ""+MALE : ""+FEMALE;
+		}
+		res += "|";
+		// birthday
+		if (getBirthday(context) != null) {
+			res += getBirthday(context);
+		}
+		res += "|";
+		// birthday
+		if (getTown(context) != null) {
+			res += getTown(context);
+		}
+		res += "|";
+		// birthday
+		if (getHometown(context) != null) {
+			res += getHometown(context);
+		}
+		res += "|";
+		// religion
+		if (getReligion(context) != null) {
+			res += getReligion(context);
+		}
+		res += "|";
+		// likes
+		if (getLikes(context) != null) {
+			res += getLikes(context);
+		}
 		return res;
 	}
-
-	/*public static void displayInfo(Context context) {
-		Log.i(SessionStore.class.getSimpleName(), "NAME = "
-				+ ((getName(context) == null) ? "NULL" : getName(context)));
-		Log.i(SessionStore.class.getSimpleName(), "USER NAME = "
-				+ ((getUserName(context) == null) ? "NULL" : getUserName(context)));
-		Log.i(SessionStore.class.getSimpleName(), "TIME = "
-				+ ((getUpdatedTime(context) == null) ? "NULL" : getUpdatedTime(context)));
-	}*/
 }

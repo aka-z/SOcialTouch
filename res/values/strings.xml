@@ -7,5 +7,13 @@
     <string name="message_facebook_login_failed">La connection facebook a échoué. Merci de recommencer.</string>
     <string name="message_facebook_logout_failed">La déconnection facebook a échoué. Merci de recommencer.</string>
     <string name="message_facebook_logout_encours">Déconnection facebook en cours...</string>
-
+    
+     <string name="point_commun_anniversaire">Incroyable, vous êtes nés le même jour!</string>
+    <string name="point_commun_religion">Vous êtes tous les deux @r</string>
+    <string name="point_commun_danslecoin">Vous habitez dans le même coin</string>
+    <string name="point_commun_danslecoin_hometown">Vous êtes originaire du même endroit</string>
+    <string name="point_commun_astro">Vous avez le même signe astrologique</string>
+    
+    <string name="cell_liste_pointcommun_no">Aucun point commun ?! Non, impossible !</string>
+    <string name="cell_liste_pointcommun">Vous avez @r point@s commun@s :</string>
 </resources>

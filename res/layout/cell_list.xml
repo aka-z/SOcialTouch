@@ -1,0 +1,118 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="4dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="4dp" >
+
+    <RelativeLayout
+        android:id="@+id/cell_list_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/cell_list_box_compat" >
+
+        <ImageView
+            android:id="@+id/cell_list_avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="8dp"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/cell_list_pseudo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/cell_list_avatar"
+            android:text="Pseudo"
+            android:textColor="@android:color/black"
+            android:textSize="19dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/cell_list_sttag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cell_list_pseudo"
+            android:layout_toRightOf="@+id/cell_list_avatar"
+            android:text="$socialtouchtag"
+            android:textColor="@android:color/black"
+            android:textSize="16dp"
+            android:textStyle="italic" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/cell_list_box_compat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="compatibility"
+            android:textColor="@android:color/black"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/cell_list_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_horizontal"
+            android:text="95%"
+            android:textColor="@android:color/black"
+            android:textSize="21dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cell_list_box"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/cell_list_pointcommun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vos points communs :"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/cell_list_points0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/index"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="point commun0"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/cell_list_points1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/index"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="point commun1"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/cell_list_points2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/index"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:text="point commun2"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+</RelativeLayout>
