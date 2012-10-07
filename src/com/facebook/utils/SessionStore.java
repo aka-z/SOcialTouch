@@ -33,10 +33,10 @@ public class SessionStore {
 	private static final String TOKEN = "access_token";
 	private static final String EXPIRES = "expires_in";
 
-	private static final String ID = "id";
 	private static final String UPDATED_TIME = "updated_time";
 	private static final String NAME = "name";
 	private static final String USERNAME = "user_name";
+	private static final String SOCIAL_TOUCH_TAG = "so_tag";
 	private static final String GENDER = "gender";
 	private static final String BIRTHDAY = "birthday";
 	private static final String TOWN = "town";
@@ -44,8 +44,8 @@ public class SessionStore {
 	private static final String RELIGION = "religion";
 	private static final String LIKES = "likes";
 
-	private static final byte MALE = 0x00;
-	private static final byte FEMALE = 0x01;
+	public static final byte MALE = 0x00;
+	public static final byte FEMALE = 0x01;
 
 	public static boolean save(Facebook session, Context context) {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
@@ -64,16 +64,6 @@ public class SessionStore {
 	public static void clear(Context context) {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
 		editor.clear();
-		editor.commit();
-	}
-
-	public static String getId(Context context) {
-		return context.getSharedPreferences(KEY, Context.MODE_PRIVATE).getString(ID, null);
-	}
-
-	public static void setId(Context context, String id) {
-		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
-		editor.putString(ID, id);
 		editor.commit();
 	}
 
@@ -105,6 +95,16 @@ public class SessionStore {
 	public static void setName(Context context, String name) {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
 		editor.putString(NAME, name);
+		editor.commit();
+	}
+
+	public static String getSOcialTouchTag(Context context) {
+		return context.getSharedPreferences(KEY, Context.MODE_PRIVATE).getString(SOCIAL_TOUCH_TAG, null);
+	}
+
+	public static void setSOcialTouchTag(Context context, String tag) {
+		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
+		editor.putString(SOCIAL_TOUCH_TAG, tag);
 		editor.commit();
 	}
 
@@ -209,19 +209,25 @@ public class SessionStore {
 		} else {
 			res += "#|";
 		}
+		// so tag
+		if (getSOcialTouchTag(context) != null) {
+			res += getSOcialTouchTag(context) + "|";
+		} else {
+			res += "#|";
+		}
 		// birthday
 		if (getBirthday(context) != null) {
 			res += getBirthday(context)+ "|";
 		} else {
 			res += "#|";
 		}
-		// birthday
+		// town
 		if (getTown(context) != null) {
 			res += getTown(context)+ "|";
 		} else {
 			res += "#|";
 		}
-		// birthday
+		// home town
 		if (getHometown(context) != null) {
 			res += getHometown(context)+ "|";
 		} else {

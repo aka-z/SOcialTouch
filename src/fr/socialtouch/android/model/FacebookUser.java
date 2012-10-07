@@ -4,22 +4,30 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 
-import fr.socialtouch.android.R;
+import com.facebook.utils.SessionStore;
 
 import android.content.Context;
 import android.util.Log;
+import fr.socialtouch.android.R;
 
 public class FacebookUser implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
+
+	public static final String MALE = "male";
+	public static final String FEMALE = "female";
+
 	private final String TAG = this.getClass().getName();
 	private Context mContext;
-	
+
 	public ArrayList<FacebookLike> mListLike = new ArrayList<FacebookLike>();
 	public String mID = "";
+	public String mName = "";
 	public String mUsername = ""; //correspond au pseudo
 	public String mBirthday = "";
 	public String mGender = "";
@@ -30,19 +38,19 @@ public class FacebookUser implements Serializable{
 	private ArrayList<String> mListCommonPoints = new ArrayList<String>();	
 
 	private double mCompatibityRate = -1;
-	
+
 	public FacebookUser(Context context) {
 		mContext = context;
 	}
-	
+
 	public String toZip(){
 		return "zipped";
 	}
-	
+
 	public String toUpload(){
 		return "uploaded";
 	}
-	
+
 	@Override
 	public String toString() {
 		Hashtable<String, String> table = new Hashtable<String, String>();
@@ -61,33 +69,33 @@ public class FacebookUser implements Serializable{
 		table.put("listLike", str);
 		return table.toString();
 	}
-	
+
 	/**
 	 * You should run {@link #getCompatibilityWith(FacebookUser)} first.
 	 */
 	public int getPointsCommumNumber(){
 		return mListCommonPoints.size();
 	}
-	
+
 	/**
 	 * You should run {@link #getCompatibilityWith(FacebookUser)} first.
 	 */
 	public ArrayList<String> getPointsCommunsListe(){
 		return mListCommonPoints;
 	}
-	
+
 	/**
 	 * You should run {@link #getCompatibilityWith(FacebookUser)} first.
 	 */
 	public double getCompatibility(){
 		return mCompatibityRate;
 	}
-	
+
 	public double getCompatibilityWith(FacebookUser profile){
 		mCompatibityRate = 0;
 		double scoreMax = 0;
 		mListCommonPoints.clear();
-		
+
 		if(!this.mBirthday.isEmpty() && !profile.mBirthday.isEmpty()){
 			try {
 				Date birthday = new SimpleDateFormat("MM/dd/yyyy").parse(this.mBirthday);
@@ -107,7 +115,7 @@ public class FacebookUser implements Serializable{
 				Log.w(TAG, e.getMessage());
 			}
 		}
-		
+
 		if(!this.mReligion.isEmpty() && !profile.mReligion.isEmpty()){
 			scoreMax += 2;
 			if(this.mReligion.equalsIgnoreCase(profile.mReligion)){
@@ -115,7 +123,7 @@ public class FacebookUser implements Serializable{
 				mListCommonPoints.add(mContext.getString(R.string.point_commun_religion).replace("@r", this.mReligion));
 			}
 		}
-		
+
 		if(!this.mLocation.mZipcode.isEmpty() && !profile.mLocation.mZipcode.isEmpty()){
 			scoreMax += 8;
 			if(this.mLocation.mZipcode.equals(profile.mLocation.mZipcode)){
@@ -125,7 +133,7 @@ public class FacebookUser implements Serializable{
 			else if(this.mLocation.mZipcode.subSequence(0, 1).equals(profile.mLocation.mZipcode.subSequence(0, 1)))
 				mCompatibityRate += 4;
 		}
-		
+
 		if(!this.mHomeTown.mZipcode.isEmpty() && !profile.mHomeTown.mZipcode.isEmpty()){
 			scoreMax += 5;
 			if(this.mHomeTown.mZipcode.equals(profile.mHomeTown.mZipcode)){
@@ -135,7 +143,7 @@ public class FacebookUser implements Serializable{
 			else if(this.mHomeTown.mZipcode.subSequence(0, 1).equals(profile.mHomeTown.mZipcode.subSequence(0, 1)))
 				mCompatibityRate += 2.5;
 		}
-		
+
 		if(!this.mBirthday.isEmpty() && !profile.mBirthday.isEmpty()){
 			scoreMax += 6;
 			if(getAstro()==profile.getAstro()){
@@ -143,7 +151,7 @@ public class FacebookUser implements Serializable{
 				mListCommonPoints.add(mContext.getString(R.string.point_commun_astro));
 			}
 		}
-		
+
 		scoreMax += this.mListLike.size();
 		for(FacebookLike fblike : this.mListLike){
 			for(int i=0; i<profile.mListLike.size(); i++){
@@ -154,13 +162,14 @@ public class FacebookUser implements Serializable{
 				}
 			}
 		}
-		
+
+		Collections.shuffle(mListCommonPoints);
 		//Log.v(TAG, "computeCompatibilityWith("+profile.mUsername+") => score:"+score+", scoreMax="+scoreMax);
 		mCompatibityRate = mCompatibityRate/scoreMax*100; 
-		
+
 		return mCompatibityRate;
 	}
-	
+
 	private int getAstro(){
 		Date birthday;
 		int returnInt;
@@ -199,9 +208,73 @@ public class FacebookUser implements Serializable{
 		//Log.v(TAG, "getAstro() => "+returnInt);
 		return returnInt;
 	}
-	
+
 	public static FacebookUser readObject(Context context, String facebookUserFormatted){
 		FacebookUser user = new FacebookUser(context);
+		String value = "#";
+		StringTokenizer token = new StringTokenizer(facebookUserFormatted,"|");
+		// username
+		value = token.nextToken();
+		if(value != "#"){
+			user.mUsername = value;
+		}
+		// name
+		value = "#";
+		value = token.nextToken();
+		if(value != "#"){
+			user.mName = value;
+		}
+		// gender
+		value = "#";
+		value = token.nextToken();
+		if(value != "#"){
+			if(value.equals(""+SessionStore.MALE)){
+				user.mGender = MALE;
+			} else{
+				user.mGender = FEMALE;
+			}
+		}
+		// so tag
+		value = "#";
+		value = token.nextToken();
+		if(value != "#"){
+			user.mSocialTouchTag = value;
+		}
+		// birthday
+		value = "#";
+		value = token.nextToken();
+		if(value != "#"){
+			user.mBirthday = value;
+		}
+		// town
+		value = "#";
+		value = token.nextToken();
+		if(value != "#"){
+			user.mLocation.mTown = value;
+		}
+		// home town
+		value = "#";
+		value = token.nextToken();
+		if(value != "#"){
+			user.mHomeTown.mTown = value;
+		}
+		// religion
+		value = "#";
+		value = token.nextToken();
+		if(value != "#"){
+			user.mReligion = value;
+		}
+		//likes
+		FacebookLike like = null;
+		while(token.hasMoreElements()){
+			
+			value = token.nextToken();
+			if(value != "#"){
+				like = new FacebookLike();
+				like.mName = value;
+				user.mListLike.add(like);
+			}
+		}
 		return user;
 	}
 }

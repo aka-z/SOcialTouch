@@ -49,7 +49,7 @@ public class FBUserInfoRetrievalService extends Service {
 			// "name,username,updated_time,birthday"
 			// id,name,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)
 			params.putString("fields",
-					"id,name,updated_time,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)");
+					"name,updated_time,gender,birthday,religion,username,hometown,location,likes.fields(likes,name)");
 			// get information about the currently logged in user
 			SocialTouchApp.getAsyncFacebookRunner().request("me", params,
 					new UserInfoRequestListener());
@@ -126,7 +126,6 @@ public class FBUserInfoRetrievalService extends Service {
 			fbUpdatedTime = getStringfFromJSONObject(jsonObject, "updated_time");
 			String localInfoTime = SessionStore.getUpdatedTime(FBUserInfoRetrievalService.this);
 			if (localInfoTime == null || !fbUpdatedTime.equals(localInfoTime)) {
-				SessionStore.setId(this, getStringfFromJSONObject(jsonObject, "id"));
 				SessionStore.setName(this, getStringfFromJSONObject(jsonObject, "name"));
 				SessionStore.setUserName(this, getStringfFromJSONObject(jsonObject, "username"));
 				SessionStore.setGender(this, getStringfFromJSONObject(jsonObject, "gender"));
