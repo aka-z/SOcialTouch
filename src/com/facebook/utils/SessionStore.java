@@ -191,49 +191,51 @@ public class SessionStore {
 
 	public static String getFBProfileFormatted(Context context) {
 		String res = "";
-		// ID
-		if (getId(context) != null) {
-			res += getId(context);
-		}
-		res += "|";
 		// username
 		if (getUserName(context) != null) {
-			res += getUserName(context);
+			res += getUserName(context) + "|";
+		} else {
+			res += "#|";
 		}
-		res += "|";
 		// name
 		if (getName(context) != null) {
-			res += getName(context);
+			res += getName(context)+ "|";
+		} else {
+			res += "#|";
 		}
-		res += "|";
 		// gender
 		if (getName(context) != null) {
-			res += getName(context) == "male" ? ""+MALE : ""+FEMALE;
+			res += getName(context) == "male" ? MALE + "|": FEMALE+ "|";
+		} else {
+			res += "#|";
 		}
-		res += "|";
 		// birthday
 		if (getBirthday(context) != null) {
-			res += getBirthday(context);
+			res += getBirthday(context)+ "|";
+		} else {
+			res += "#|";
 		}
-		res += "|";
 		// birthday
 		if (getTown(context) != null) {
-			res += getTown(context);
+			res += getTown(context)+ "|";
+		} else {
+			res += "#|";
 		}
-		res += "|";
 		// birthday
 		if (getHometown(context) != null) {
-			res += getHometown(context);
+			res += getHometown(context)+ "|";
+		} else {
+			res += "#|";
 		}
-		res += "|";
 		// religion
 		if (getReligion(context) != null) {
-			res += getReligion(context);
+			res += getReligion(context)+ "|";
+		} else {
+			res += "#|";
 		}
-		res += "|";
 		// likes
 		if (getLikesFormatted(context) != null) {
-			res += getLikesFormatted(context);
+			res += getLikesFormatted(context)+ "|";
 		}
 		return res;
 	}

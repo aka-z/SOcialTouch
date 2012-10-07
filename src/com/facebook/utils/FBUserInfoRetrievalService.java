@@ -27,7 +27,7 @@ import fr.socialtouch.android.SocialTouchApp;
 
 public class FBUserInfoRetrievalService extends Service {
 
-	private static final int MAX_LIKES_NUMBER = 10;
+	private static final int REQUIRED_NUMBER_OF_LIKES = 10;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -155,25 +155,46 @@ public class FBUserInfoRetrievalService extends Service {
 
 	private List<String> getLikesFromJSONObject(JSONObject jsonObject) {
 		List<String> listLikes = null;
+		ArrayList<String> arrayListLikes = null;
+		TreeMap<String, Integer> sortedMap = null;
 		Map<String, Integer> likesNameWithLikesNumber = new HashMap<String, Integer>();
 		try {
 			JSONObject like;
+			// retrieve likes from data
 			JSONArray likesArray = jsonObject.getJSONObject("likes").getJSONArray("data");
 			for (int i = 0; i < likesArray.length(); i++) {
 				like = likesArray.getJSONObject(i);
+				// retrieve name and likes from likes
 				likesNameWithLikesNumber.put(like.getString("name"), like.getInt("likes"));
 			}
+			// sort likes from the most to the lowest number of likes
 			ValueComparator bvc = new ValueComparator(likesNameWithLikesNumber);
-			TreeMap<String, Integer> sortedMap = new TreeMap<String, Integer>(bvc);
+			sortedMap = new TreeMap<String, Integer>(bvc);
 			sortedMap.putAll(likesNameWithLikesNumber);
-			ArrayList<String> arrayListLikes = new ArrayList<String>(sortedMap.keySet());
-			if (arrayListLikes.size() > MAX_LIKES_NUMBER) {
-				listLikes = arrayListLikes.subList(0, MAX_LIKES_NUMBER);
+			arrayListLikes = new ArrayList<String>(sortedMap.keySet());
+			// add padding with # to have exactly REQUIRED_NUMBER_OF_LIKES elements
+			if (arrayListLikes.size() < REQUIRED_NUMBER_OF_LIKES) {
+				for (int i = arrayListLikes.size(); i < REQUIRED_NUMBER_OF_LIKES; i++) {
+					arrayListLikes.add("#");
+				}
 			}
-			Log.e(getClass().getSimpleName(), "likesFormated = " + listLikes);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		if (sortedMap != null) {
+			arrayListLikes = new ArrayList<String>(sortedMap.keySet());
+		} else {
+			// create an array and add padding
+			arrayListLikes = new ArrayList<String>(REQUIRED_NUMBER_OF_LIKES);
+			for (int i = 0; i < arrayListLikes.size(); i++) {
+				arrayListLikes.add("#");
+			}
+		}
+		// remove excessive likes if too many are present
+		if (arrayListLikes.size() > REQUIRED_NUMBER_OF_LIKES) {
+			listLikes = arrayListLikes.subList(0, REQUIRED_NUMBER_OF_LIKES);
+		}
+		Log.e(getClass().getSimpleName(), "likesFormated = " + listLikes);
 		return listLikes;
 	}
 
