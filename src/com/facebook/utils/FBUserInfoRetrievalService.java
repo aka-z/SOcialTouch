@@ -53,6 +53,8 @@ public class FBUserInfoRetrievalService extends Service {
 			// get information about the currently logged in user
 			SocialTouchApp.getAsyncFacebookRunner().request("me", params,
 					new UserInfoRequestListener());
+		} else{
+			Log.e(getClass().getSimpleName(), "retrieveUserInfo FAILED");
 		}
 	}
 
@@ -64,23 +66,28 @@ public class FBUserInfoRetrievalService extends Service {
 		 */
 		@Override
 		public void onComplete(String response, Object state) {
+			Log.e(getClass().getSimpleName(), "onComplete");
 			storeFBInformations(response);
 		}
 
 		@Override
 		public void onIOException(IOException e, Object state) {
+			Log.e(getClass().getSimpleName(), "onIOException");
 		}
 
 		@Override
 		public void onFileNotFoundException(FileNotFoundException e, Object state) {
+			Log.e(getClass().getSimpleName(), "onFileNotFoundException");
 		}
 
 		@Override
 		public void onMalformedURLException(MalformedURLException e, Object state) {
+			Log.e(getClass().getSimpleName(), "onMalformedURLException");
 		}
 
 		@Override
 		public void onFacebookError(FacebookError e, Object state) {
+			Log.e(getClass().getSimpleName(), "onFacebookError");
 		}
 	}
 
@@ -148,7 +155,7 @@ public class FBUserInfoRetrievalService extends Service {
 			value = jsonObject.getString(key);
 		} catch (JSONException e) {
 		}
-		Log.i(getClass().getSimpleName(), "KEY = " + key + " VALUE = " + value);
+		//Log.i(getClass().getSimpleName(), "KEY = " + key + " VALUE = " + value);
 		return value;
 	}
 

@@ -16,4 +16,6 @@
     
     <string name="cell_liste_pointcommun_no">Aucun point commun ?! Non, impossible !</string>
     <string name="cell_liste_pointcommun">Vous avez @r point@s commun@s :</string>
+    <string name="splash_intro">Rends tes soirées plus sociales !</string>
+    <string name="splash_connecte_toi">Vas-y, connectes-toi !</string>
 </resources>
