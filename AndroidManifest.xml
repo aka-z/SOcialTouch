@@ -52,7 +52,7 @@
                 android:resource="@xml/techlist" />
         </activity>
 
-        <service android:name="com.facebook.fr.socialtouch.android.utils.FBUserInfoRetrievalService" />
+        <service android:name="com.facebook.utils.FBUserInfoRetrievalService" />
     </application>
 
 </manifest>

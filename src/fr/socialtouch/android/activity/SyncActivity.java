@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 
+import com.facebook.utils.SessionStore;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -11,7 +13,9 @@ import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import fr.socialtouch.android.R;
+import fr.socialtouch.android.model.FacebookUser;
 
 public class SyncActivity extends Activity {
 
@@ -23,10 +27,15 @@ public class SyncActivity extends Activity {
 	private static final String PROFILE_4 = "bhart|#|1|#|#|#|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
 	private static final String PROFILE_5 = "#|#|0|#|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
 	
+	TextView resultFacebook;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.matching);
+		
+		resultFacebook = (TextView) findViewById(R.id.resultFacebook);
+ 
 	}
 	
 	@Override
@@ -45,8 +54,13 @@ public class SyncActivity extends Activity {
 	    		
 	    		String prof_string = PROFILE_1+"||"+PROFILE_2+"||";
 	    		
-	    		Log.e("Social Touch","Write "+prof_string+" world to tag");
-	    		writeToTag(mifare, prof_string, false);		
+	    		//Log.e("Social Touch","Write "+prof_string+" world to tag");
+	    		//writeToTag(mifare, prof_string, false);		
+	    	
+	    		prof_string = SessionStore.getFBProfileFormatted(this)+"||"+SessionStore.getFBProfileFormatted(this);
+	    		
+	    		Log.e("Social Touch","Write "+prof_string+"||"+" world to tag");
+	    		writeToTag(mifare, prof_string+"||", false);
 	    		
 				String data = readFromTag(mifare);
 				
@@ -58,6 +72,11 @@ public class SyncActivity extends Activity {
 					Log.e("SocialTouch","Read Profile data = " + profiles[i]);
 					
 				}
+				
+				FacebookUser user = FacebookUser.readObject(this, profiles[0]);
+				FacebookUser user2 = FacebookUser.readObject(this, profiles[1]);
+				
+				resultFacebook.setText(user.toString()+"\n\n"+user2.toString());
 				
 				Log.e("SocialTouch","Tag data = " + data);
 				Log.e("SocialTouch","Clear tag data");
