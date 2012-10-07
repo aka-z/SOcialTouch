@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -42,6 +43,8 @@ public class FBConnectActivity extends SherlockFragmentActivity implements OnCli
 		
 		btnFBConnect = (Button)findViewById(R.id.btn_fb_connect);
 		btnFBConnect.setText(R.string.splash_connecte_toi);
+		
+		Log.e(getClass().getSimpleName(), SessionStore.getFBProfileFormatted(this));
 		
 		// init view pager
 		List<TutoFragment> mFragments = new ArrayList<TutoFragment>();

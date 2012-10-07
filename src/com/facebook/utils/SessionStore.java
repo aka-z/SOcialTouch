@@ -241,7 +241,7 @@ public class SessionStore {
 		}
 		// likes
 		if (getLikesFormatted(context) != null) {
-			res += getLikesFormatted(context)+ "|";
+			res += getLikesFormatted(context);
 		}
 		return res;
 	}
