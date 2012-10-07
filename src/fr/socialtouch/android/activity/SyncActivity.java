@@ -17,6 +17,11 @@ public class SyncActivity extends Activity {
 
 	// max byte size
 	public static final int TAG_SIZE = 1504;
+	private static final String PROFILE_1 = "bhart|Bret Hart|0|12-04-83|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+	private static final String PROFILE_2 = "bhart|#|#|#|#|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+	private static final String PROFILE_3 = "#|Bret Hart|0|#|#|92340||World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+	private static final String PROFILE_4 = "bhart|#|1|#|#|#|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+	private static final String PROFILE_5 = "#|#|0|#|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +38,32 @@ public class SyncActivity extends Activity {
 	    
 	    
 	    if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(getIntent().getAction())) {	        
-	    	// tag détecté	 
+	    	// tag dï¿½tectï¿½	 
 	    	MifareClassic mifare = MifareClassic.get(tag);
-	    	// on peut lire et écrire ici
+	    	// on peut lire et ï¿½crire ici
 	    	try {
+	    		
+	    		String prof_string = PROFILE_1+"||"+PROFILE_2+"||";
+	    		
+	    		Log.e("Social Touch","Write "+prof_string+" world to tag");
+	    		writeToTag(mifare, prof_string, false);		
+	    		
 				String data = readFromTag(mifare);
-				Log.d("SocialTouch","Tag data = " + data);
-				Log.d("SocialTouch","Clear tag data");
+				
+				String[] profiles;
+				profiles = data.split("(\\|\\|)");
+				
+				for(int i = 0;i<profiles.length-1;i++){						
+			
+					Log.e("SocialTouch","Read Profile data = " + profiles[i]);
+					
+				}
+				
+				Log.e("SocialTouch","Tag data = " + data);
+				Log.e("SocialTouch","Clear tag data");
 				clearTag(mifare);
-				Log.d("Social Touch","Write hello world to tag");
-				writeToTag(mifare, "Hello World!", false);				
+				
+						
 			} catch (IOException e) {
 				// oh no !
 				e.printStackTrace();
@@ -94,7 +115,7 @@ public class SyncActivity extends Activity {
         	{
 				BigInteger bi = new BigInteger(toWrite);
 				String hexrepresentation = bi.toString(16); 
-				Log.d("NFC WRITER","Write " + hexrepresentation + " to sector " + sector + " block " + block + " aka " + (block + mifare.sectorToBlock(sector)));
+				Log.e("NFC WRITER","Write " + hexrepresentation + " to sector " + sector + " block " + block + " aka " + (block + mifare.sectorToBlock(sector)));
 				mifare.writeBlock(block + mifare.sectorToBlock(sector), toWrite);
 				block++;
              }		              		   
@@ -116,6 +137,11 @@ public class SyncActivity extends Activity {
 				if(!auth)
 					throw new IOException("Cannot authenticate to sector " + sector);
 			}
+			
+			if(i>4 && (i%4)==3 )
+				continue;
+
+			//Log.e("TEST","i:"+i+" bloc:"+ new String(mifare.readBlock(i),Charset.forName("ASCII")));
 			sb.append( new String(mifare.readBlock(i),Charset.forName("ASCII"))); 
 		}
 		mifare.close();
