@@ -18,10 +18,17 @@ import com.facebook.utils.SessionStore;
 
 import fr.socialtouch.android.R;
 import fr.socialtouch.android.SocialTouchApp;
+import fr.socialtouch.android.model.FacebookUser;
 
 public class FBConnectActivity extends SherlockActivity implements OnClickListener {
 
 	private Button btnFBConnect;
+	
+	private static final String PROFILE_1 = "bhart|Bret Hart|0|dev|12-04-83|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+	private static final String PROFILE_2 = "bhart|#|#|#|#|#|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+	private static final String PROFILE_3 = "#|Bret Hart|0|#|#|#|92340||World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|Cedric Ben Abdallah|Action Discru\00e8te|All United Drinks";
+	private static final String PROFILE_4 = "bhart|#|1|crea|#|#|#|islam|World taekwondo family|SPAMM|American Dad|#|#|#|#|#|#|#";
+	private static final String PROFILE_5 = "#|#|0|#|#|75015|92340|islam|World taekwondo family|SPAMM|American Dad|Mark The Ugly|GET SOME|Hoax-Slayer|PARIS IS BURNING|#|#|#";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,13 @@ public class FBConnectActivity extends SherlockActivity implements OnClickListen
 		setContentView(R.layout.activity_splash);
 		btnFBConnect = (Button)findViewById(R.id.btn_fb_connect);
 		btnFBConnect.setText("Vas-y, connectes-toi !");
+		// TEST
+		//FacebookUser.readObject(this, PROFILE_1);
+		//FacebookUser.readObject(this, PROFILE_2);
+		//FacebookUser.readObject(this, PROFILE_3);
+		FacebookUser.readObject(this, PROFILE_4);
+		FacebookUser.readObject(this, PROFILE_5);
+		
 	}
 
 	@Override
