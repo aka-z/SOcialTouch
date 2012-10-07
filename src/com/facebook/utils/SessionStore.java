@@ -204,7 +204,7 @@ public class SessionStore {
 			res += "#|";
 		}
 		// gender
-		if (getName(context) != null) {
+		if (getGender(context) != null) {
 			res += getName(context) == "male" ? MALE + "|": FEMALE+ "|";
 		} else {
 			res += "#|";
